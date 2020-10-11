@@ -21,21 +21,8 @@ class ClientThread(Thread):
                 nameOfFile = arrData[1]
                 print("Server received menssage: "+recibed)
                 if recibed == "SD":
-                        recived_f = nameOfFile
-                        with open(recived_f, 'wb') as f:
-                            print('file opened')
-                            while True:
-                                print('receiving data...')
-                                data = conn.recv(BUFFER_SIZE)
-                                print(f"data = {data}")
-                                if not data:
-                                    print('finished receiving data.')
-                                    f.close()
-                                    print('file close()')
-                                    break
-                                # write data to a file
-                                f.write(data)
-                        print('Successfully get the file')   
+                    self.dataToRecibe(nameOfFile)
+
 
     def dataToRecibe(self,file):
         recived_f = file
@@ -43,13 +30,16 @@ class ClientThread(Thread):
             print('file opened')
             while True:
                 print('receiving data...')
-                data = tcpServer.recv(BUFFER_SIZE)
-                print('data=%s', (data))
+                data = conn.recv(BUFFER_SIZE)
+                print(f"data = {data}")
                 if not data:
+                    print('finished receiving data.')
                     f.close()
                     print('file close()')
                     break
+                # write data to a file
                 f.write(data)
+        print('Successfully get the file')   
 
 
 # Multithreaded Python server : TCP Server Socket Program Stub
