@@ -49,23 +49,13 @@ class ClientThread(Thread):
                     f.close()
                     print('file close()')
                     break
-                # write data to a file
                 f.write(data)
-        #print('Successfully get the file')
-            # MESSAGE = input("Multithreaded Python server : Enter Response from Server/Enter exit:")
-            # if MESSAGE == 'exit':
-            #     break
-            # conn.send(MESSAGE.encode())  # echo
-
-
-
 
 
 # Multithreaded Python server : TCP Server Socket Program Stub
 TCP_IP = '0.0.0.0'
 TCP_PORT = 2004
 BUFFER_SIZE = 4096  # Usually 1024, but we need quick response
-SEPARATOR = "<SEPARATOR>"
 
 tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -73,7 +63,6 @@ tcpServer.bind((TCP_IP, TCP_PORT))
 threads = []
 
 try:
-    threads = []
     tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
