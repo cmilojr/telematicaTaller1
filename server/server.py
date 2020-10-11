@@ -10,22 +10,32 @@ class ClientThread(Thread):
         Thread.__init__(self)
         self.ip = ip
         self.port = port
-        print("[+] New server socket thread started for " + ip + ":" + str(port))
+        print("New server socket thread started for " + ip + ":" + str(port))
 
     def run(self):
-        print("inicie")
-        while True :
+        while True:
             data = conn.recv(BUFFER_SIZE)
-            recibed = data.decode(encoding="utf-8")
-            
-            if recibed != "":
-                print("Server received data: "+recibed)
+            arrData = data.decode(encoding="utf-8").split()
+            if len(arrData) >= 2:
+                recibed = arrData[0]
+                nameOfFile = arrData[1]
+                print("Server received menssage: "+recibed)
                 if recibed == "SD":
-                    while True:
-                        file = data.decode(encoding="utf-8")
-                        if file != "SD":
-                            self.dataToRecibe(file)
-                            
+                        recived_f = nameOfFile
+                        with open(recived_f, 'wb') as f:
+                            print('file opened')
+                            while True:
+                                print('receiving data...')
+                                data = conn.recv(BUFFER_SIZE)
+                                print(f"data = {data}")
+                                if not data:
+                                    print('finished receiving data.')
+                                    f.close()
+                                    print('file close()')
+                                    break
+                                # write data to a file
+                                f.write(data)
+                        print('Successfully get the file')   
 
     def dataToRecibe(self,file):
         recived_f = file
@@ -41,7 +51,7 @@ class ClientThread(Thread):
                     break
                 # write data to a file
                 f.write(data)
-        print('Successfully get the file')
+        #print('Successfully get the file')
             # MESSAGE = input("Multithreaded Python server : Enter Response from Server/Enter exit:")
             # if MESSAGE == 'exit':
             #     break
