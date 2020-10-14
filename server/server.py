@@ -51,15 +51,15 @@ class ClientThread(Thread):
                     if stop:
                         conn.sendall(("success in the delete").encode())
                     else:
-                        msg = "error in the delete, try again"
-                        conn.sendall((msg).encode())
+                        msg1 = "error in the delete, try again"
+                        conn.sendall((msg1).encode())
                 elif recibed.lower() == "rmf":
                         stop = self.removeFile(nameOfFile)
                         if stop:
                             conn.sendall(("success in the delete").encode())
                         else:
-                            msg = "error in the delete, try again"
-                        conn.sendall((msg).encode())
+                            msg1 = "error in the delete, try again"
+                        conn.sendall((msg1).encode())
 
     def dataToRecibe(self,file):
         recived_f = file

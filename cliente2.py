@@ -26,23 +26,21 @@ def work():
             #tcpClientB.send(MESSAGE.encode())
             elif MESSAGE.lower() == "rma":
                 while True:
-                    deleteName = input("enter name of file to delete or enter or enter \" exit \" of back: ")
+                    deleteName = input("enter name of file to delete or enter  \" exit \" of back: ")
                     if deleteName.lower() == "back":
                         break
                     else:
                         tcpClientB.send((MESSAGE+" "+deleteName).encode())
-                        if __name__ == '__main__':
-                            msg = tcpClientB.recv(2000)
+                        msg = tcpClientB.recv(2000)
                         print(msg.decode())
             elif MESSAGE.lower() == "rmf":
                 while True:
-                    deleteName = input("enter name of file to delete or enter or enter \" exit \" of back: ")
+                    deleteName = input("enter name of file to delete or enter  \" exit \" of back: ")
                     if deleteName.lower() == "back":
                         break
                     else:
                         tcpClientB.send((MESSAGE+" "+deleteName).encode())
-                        if __name__ == '__main__':
-                            msg = tcpClientB.recv(2000)
+                        msg = tcpClientB.recv(2000)
                         print(msg.decode())
         tcpClientB.close()
         print("connection end")
