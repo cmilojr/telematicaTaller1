@@ -13,6 +13,8 @@ def work():
         tcpClientB.connect((host, port))
         while True:#MESSAGE != 'exit':
             MESSAGE = input("Client: Enter code / Enter exit: ")
+            if MESSAGE.lower() == "exit":
+                break
             if MESSAGE == 'SD':
                 try:
                     nameOfFile = input("Enter name of file with extension: ")
@@ -22,7 +24,28 @@ def work():
                     print("Error sending data")
             #MESSAGE = input("Enter code / Enter exit: ")
             #tcpClientB.send(MESSAGE.encode())
+            elif MESSAGE.lower() == "rma":
+                while True:
+                    deleteName = input("enter name of file to delete or enter or enter \" exit \" of back: ")
+                    if deleteName.lower() == "back":
+                        break
+                    else:
+                        tcpClientB.send((MESSAGE+" "+deleteName).encode())
+                        if __name__ == '__main__':
+                            msg = tcpClientB.recv(2000)
+                        print(msg.decode())
+            elif MESSAGE.lower() == "rmf":
+                while True:
+                    deleteName = input("enter name of file to delete or enter or enter \" exit \" of back: ")
+                    if deleteName.lower() == "back":
+                        break
+                    else:
+                        tcpClientB.send((MESSAGE+" "+deleteName).encode())
+                        if __name__ == '__main__':
+                            msg = tcpClientB.recv(2000)
+                        print(msg.decode())
         tcpClientB.close()
+        print("connection end")
     except:
         print("Connection error to the server.")
 

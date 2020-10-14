@@ -1,9 +1,9 @@
 import socket
 import tqdm
 import os
+import shutil
 from threading import Thread
 from socketserver import ThreadingMixIn
-
 # Multithreaded Python server : TCP Server Socket Thread Pool
 class ClientThread(Thread):
     def __init__(self,ip,port):
@@ -11,6 +11,28 @@ class ClientThread(Thread):
         self.ip = ip
         self.port = port
         print("New server socket thread started for " + ip + ":" + str(port))
+
+    def removeArchive(self,nameAr):
+        try:
+            os.remove(nameAr)
+            return True
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
+            return False
+
+    def removeFile(self, nameFile):
+        try:
+            shutil.rmtree(nameFile)
+            return True
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
+
+    def list(address):
+        try:
+            data = os.listdir(address)
+            return data
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
 
     def run(self):
         while True:
@@ -22,7 +44,22 @@ class ClientThread(Thread):
                 print("Server received menssage: "+recibed)
                 if recibed == "SD":
                     self.dataToRecibe(nameOfFile)
-
+                elif recibed.lower() == "rma":
+                    print(nameOfFile)
+                    nameAr = nameOfFile  # guarda el nombre del archivo
+                    stop = self.removeArchive(nameAr)
+                    if stop:
+                        conn.sendall(("success in the delete").encode())
+                    else:
+                        msg = "error in the delete, try again"
+                        conn.sendall((msg).encode())
+                elif recibed.lower() == "rmf":
+                        stop = self.removeFile(nameOfFile)
+                        if stop:
+                            conn.sendall(("success in the delete").encode())
+                        else:
+                            msg = "error in the delete, try again"
+                        conn.sendall((msg).encode())
 
     def dataToRecibe(self,file):
         recived_f = file
