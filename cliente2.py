@@ -1,4 +1,5 @@
 # Python TCP Client B
+import os
 import socket
 import threading
 
@@ -18,7 +19,7 @@ def work():
             if MESSAGE == 'SD':
                 try:
                     nameOfFile = input("Enter name of file with extension: ")
-                    tcpClientB.send((MESSAGE+" "+nameOfFile).encode())
+                    tcpClientB.send((MESSAGE+"$"+nameOfFile).encode())
                     sendData(nameOfFile)
                 except:
                     print("Error sending data")
@@ -26,22 +27,41 @@ def work():
             #tcpClientB.send(MESSAGE.encode())
             elif MESSAGE.lower() == "rma":
                 while True:
-                    deleteName = input("enter name of file to delete or enter  \" exit \" of back: ")
+                    deleteName = input("enter name of file to delete or enter  \" back \" for back: ")
                     if deleteName.lower() == "back":
                         break
                     else:
-                        tcpClientB.send((MESSAGE+" "+deleteName).encode())
+                        tcpClientB.send((MESSAGE+"$"+deleteName).encode())
                         msg = tcpClientB.recv(2000)
                         print(msg.decode())
             elif MESSAGE.lower() == "rmf":
                 while True:
-                    deleteName = input("enter name of file to delete or enter  \" exit \" of back: ")
+                    deleteName = input("enter name of file to delete or enter  \" back \" for back: ")
                     if deleteName.lower() == "back":
                         break
                     else:
-                        tcpClientB.send((MESSAGE+" "+deleteName).encode())
+                        tcpClientB.send((MESSAGE+"$"+deleteName).encode())
                         msg = tcpClientB.recv(2000)
                         print(msg.decode())
+            elif MESSAGE.lower() == "list":
+                tcpClientB.send(("basepath"+ "$").encode())
+                msg = tcpClientB.recv(80000)
+                basePath = msg.decode()
+                while True:
+                    print("path = "+basePath)
+                    pathName = input("enter path or enter  \"back\" for back: ")
+                    if pathName.lower() == "back":
+                        break
+                    else:
+                        tcpClientB.send((MESSAGE  + "$" + basePath + "$" + pathName).encode())
+                        path = tcpClientB.recv(80000)
+                        msg = tcpClientB.recv(80000)
+                        if (msg.decode()).lower() == "error in the path, try again":
+                            basePath = basePath
+                        else:
+                            basePath = path.decode()
+                            print(msg.decode())
+
         tcpClientB.close()
         print("connection end")
     except:

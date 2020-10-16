@@ -27,17 +27,24 @@ class ClientThread(Thread):
         except OSError as e:
             print("Error: %s - %s." % (e.filename, e.strerror))
 
-    def list(address):
+    def list(self, address):
         try:
             data = os.listdir(address)
             return data
         except OSError as e:
             print("Error: %s - %s." % (e.filename, e.strerror))
+            return False
+    def basePath(self):
+        return os.getcwd()
+    def path(self, basePath, userPath):
+        path = os.path.join(basePath, userPath)
+        path = os.path.abspath(path)
+        return path
 
     def run(self):
         while True:
             data = conn.recv(BUFFER_SIZE)
-            arrData = data.decode(encoding="utf-8").split()
+            arrData = data.decode(encoding="utf-8").split("$")
             if len(arrData) >= 2:
                 recibed = arrData[0]
                 nameOfFile = arrData[1]
@@ -52,15 +59,34 @@ class ClientThread(Thread):
                         conn.sendall(("success in the delete").encode())
                     else:
                         msg1 = "error in the delete, try again"
-                        conn.sendall((msg1).encode())
+                        conn.sendall(msg1.encode())
                 elif recibed.lower() == "rmf":
                         stop = self.removeFile(nameOfFile)
                         if stop:
                             conn.sendall(("success in the delete").encode())
                         else:
                             msg1 = "error in the delete, try again"
+                            conn.sendall((msg1).encode())
+                elif recibed.lower() == "list":
+                    basePath = nameOfFile
+                    userPath = arrData[2]
+                    print(basePath)
+                    print(userPath)
+                    path = self.path(basePath, userPath)
+                    print(path)
+                    conn.sendall(str(path).encode())
+                    data1 = self.list(path)
+                    if data1 != False:
+                        print("entro")
+                        conn.sendall((str(data1).encode()))
+                    else:
+                        msg1 = "error in the path, try again"
                         conn.sendall((msg1).encode())
-
+                        print(data1)
+                    print(data1)
+                elif recibed.lower() == "basepath":
+                    address = self.basePath()
+                    conn.sendall((str(address).encode()))
     def dataToRecibe(self,file):
         recived_f = file
         with open(recived_f, 'wb') as f:
@@ -88,7 +114,6 @@ tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tcpServer.bind((TCP_IP, TCP_PORT))
 threads = []
-
 try:
     tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
