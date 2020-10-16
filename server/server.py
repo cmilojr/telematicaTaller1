@@ -70,20 +70,14 @@ class ClientThread(Thread):
                 elif recibed.lower() == "list":
                     basePath = nameOfFile
                     userPath = arrData[2]
-                    print(basePath)
-                    print(userPath)
                     path = self.path(basePath, userPath)
-                    print(path)
                     conn.sendall(str(path).encode())
                     data1 = self.list(path)
                     if data1 != False:
-                        print("entro")
                         conn.sendall((str(data1).encode()))
                     else:
                         msg1 = "error in the path, try again"
                         conn.sendall((msg1).encode())
-                        print(data1)
-                    print(data1)
                 elif recibed.lower() == "basepath":
                     address = self.basePath()
                     conn.sendall((str(address).encode()))
