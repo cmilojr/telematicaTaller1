@@ -27,7 +27,7 @@ def work():
             #tcpClientB.send(MESSAGE.encode())
             elif MESSAGE.lower() == "rma":
                 while True:
-                    deleteName = input("enter name of file to delete or enter  \" back \" for back: ")
+                    deleteName = input("enter name of file to delete or enter  \" back \" to back: ")
                     if deleteName.lower() == "back":
                         break
                     else:
@@ -36,7 +36,7 @@ def work():
                         print(msg.decode())
             elif MESSAGE.lower() == "rmf":
                 while True:
-                    deleteName = input("enter name of file to delete or enter  \" back \" for back: ")
+                    deleteName = input("enter name of file to delete or enter  \" back \" to  back: ")
                     if deleteName.lower() == "back":
                         break
                     else:
@@ -49,7 +49,7 @@ def work():
                 basePath = msg.decode()
                 while True:
                     print("path = "+basePath)
-                    pathName = input("enter path or enter  \"back\" for back: ")
+                    pathName = input("enter path or enter  \"back\" to back: ")
                     if pathName.lower() == "back":
                         break
                     else:
