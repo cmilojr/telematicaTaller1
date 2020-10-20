@@ -61,7 +61,15 @@ def work():
                         else:
                             basePath = path.decode()
                             print(msg.decode())
-
+            elif MESSAGE.lower() == "nf":
+                while True:
+                    deleteName = input("enter name of file to create  or enter  \" back \" to  back: ")
+                    if deleteName.lower() == "back":
+                        break
+                    else:
+                        tcpClientB.send((MESSAGE+"$"+deleteName).encode())
+                        msg = tcpClientB.recv(2000)
+                        print(msg.decode())
         tcpClientB.close()
         print("connection end")
     except:

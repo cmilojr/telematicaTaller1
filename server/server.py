@@ -39,7 +39,12 @@ class ClientThread(Thread):
         path = os.path.join(basePath, userPath)
         path = os.path.abspath(path)
         return path
-
+    def newFile(self,name):
+        try:
+            os.mkdir(name)
+            return True
+        except OSError as e:
+            return e.filename, e.strerror
     def run(self):
         while True:
             data = conn.recv(BUFFER_SIZE)
@@ -80,6 +85,12 @@ class ClientThread(Thread):
                 elif recibed.lower() == "basepath":
                     address = self.basePath()
                     conn.sendall((str(address).encode()))
+                elif recibed.lower() == "nf":
+                    file = self.newFile(nameOfFile)
+                    if file == True:
+                        conn.sendall(("Success in file creation").encode())
+                    else:
+                        conn.sendall(("error: " + file[0] + " " + file[1]).encode())
     def dataToRecibe(self,file):
         recived_f = file
         with open(recived_f, 'wb') as f:
