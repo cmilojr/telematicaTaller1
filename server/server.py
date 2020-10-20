@@ -1,5 +1,4 @@
 import socket
-import tqdm
 import os
 import shutil
 from threading import Thread
@@ -102,7 +101,7 @@ class ClientThread(Thread):
 # Multithreaded Python server : TCP Server Socket Program Stub
 TCP_IP = '0.0.0.0'
 TCP_PORT = 2004
-BUFFER_SIZE = 4096  # Usually 1024, but we need quick response
+BUFFER_SIZE = 80096  # Usually 1024, but we need quick response
 
 tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
