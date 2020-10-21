@@ -48,7 +48,7 @@ class ClientThread(Thread):
                 recibed = arrData[0]
                 nameOfFile = arrData[1]
                 print("Server received menssage: "+recibed)
-                if recibed == "SD":
+                if recibed.lower() == "sd":
                     self.dataToRecibe(nameOfFile)
                 elif recibed.lower() == "rma":
                     print(nameOfFile)
@@ -70,16 +70,18 @@ class ClientThread(Thread):
                     basePath = nameOfFile
                     userPath = arrData[2]
                     path = self.path(basePath, userPath)
-                    conn.sendall(str(path).encode())
                     data1 = self.list(path)
                     if data1 != False:
-                        conn.sendall((str(data1).encode()))
+                        conn.sendall((str(path) + "@" + str(data1)).encode())
                     else:
                         msg1 = "error in the path, try again"
                         conn.sendall((msg1).encode())
                 elif recibed.lower() == "basepath":
                     address = self.basePath()
                     conn.sendall((str(address).encode()))
+                else:
+                    conn.sendall(("error code").encode())
+                    print("error code from client")
     def dataToRecibe(self,file):
         recived_f = file
         with open(recived_f, 'wb') as f:
