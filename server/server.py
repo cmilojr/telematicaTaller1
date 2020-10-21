@@ -84,18 +84,15 @@ class ClientThread(Thread):
                 elif recibed.lower() == "basepath":
                     address = self.basePath()
                     conn.sendall((str(address).encode()))
-<<<<<<< HEAD
-                else:
-                    conn.sendall(("error code").encode())
-                    print("error code from client")
-=======
                 elif recibed.lower() == "nf":
                     file = self.newFile(nameOfFile)
                     if file == True:
                         conn.sendall(("Success in file creation").encode())
                     else:
                         conn.sendall(("error: " + file[0] + " " + file[1]).encode())
->>>>>>> 5e654ac0c15099fb889b8b747b2e5915862c27ef
+                else:
+                    conn.sendall(("error code").encode())
+                    print("error code from client")
     def dataToRecibe(self,file):
         recived_f = file
         with open(recived_f, 'wb') as f:

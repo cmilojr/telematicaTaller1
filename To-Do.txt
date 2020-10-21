@@ -8,4 +8,3 @@ TAREAS:
 * Camilo
 - descargar archivos
 - el servidor se confunde cuando ambos clientes interactuan
-- despues de enviar un archivo el cliente pierde la conexión con el servidor
