@@ -43,7 +43,7 @@ class ClientThread(Thread):
     def run(self):
         while True:
             data = conn.recv(BUFFER_SIZE)
-            arrData = data.decode(encoding="utf-8").split("$")
+            arrData = data.decode(encoding="utf-8").split("<separator>")
             if len(arrData) >= 2:
                 recibed = arrData[0]
                 nameOfFile = arrData[1]
@@ -89,14 +89,14 @@ class ClientThread(Thread):
             while True:
                 print('receiving data...')
                 data = conn.recv(BUFFER_SIZE)
-                print(f"data = {data}")
-                if not data:
-                    print('finished receiving data.')
-                    f.close()
-                    print('file close()')
-                    break
-                # write data to a file
+                print(f"data recived = {data}")
                 f.write(data)
+                #if not data:
+                print('finished receiving data.')
+                f.close()
+                print('file close()')
+                break
+                #f.write(data)
         print('Successfully get the file')   
 
 

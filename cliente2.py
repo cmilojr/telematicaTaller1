@@ -16,10 +16,10 @@ def work():
             MESSAGE = input("Client: Enter code / Enter exit: ")
             if MESSAGE.lower() == "exit":
                 break
-            if MESSAGE == 'SD':
+            if MESSAGE.lower() == 'sd':
                 try:
                     nameOfFile = input("Enter name of file with extension: ")
-                    tcpClientB.send((MESSAGE+"$"+nameOfFile).encode())
+                    tcpClientB.send((MESSAGE+"<separator>"+nameOfFile).encode())
                     sendData(nameOfFile)
                 except:
                     print("Error sending data")
@@ -31,7 +31,7 @@ def work():
                     if deleteName.lower() == "back":
                         break
                     else:
-                        tcpClientB.send((MESSAGE+"$"+deleteName).encode())
+                        tcpClientB.send((MESSAGE+"<separator>"+deleteName).encode())
                         msg = tcpClientB.recv(2000)
                         print(msg.decode())
             elif MESSAGE.lower() == "rmf":
@@ -40,28 +40,30 @@ def work():
                     if deleteName.lower() == "back":
                         break
                     else:
-                        tcpClientB.send((MESSAGE+"$"+deleteName).encode())
+                        tcpClientB.send((MESSAGE+"<separator>"+deleteName).encode())
                         msg = tcpClientB.recv(2000)
                         print(msg.decode())
             elif MESSAGE.lower() == "list":
-                tcpClientB.send(("basepath"+ "$").encode())
+                tcpClientB.send(("basepath"+ "<separator>").encode())
                 msg = tcpClientB.recv(80000)
                 basePath = msg.decode()
                 while True:
-                    print("path = "+basePath)
-                    pathName = input("enter path or enter  \"back\" to back: ")
+                    print("\n* current path = "+basePath)
+                    pathName = input("* enter name of the folder\n* enter \".\" to list the files of the current folder\n* use \"..\" to exit the folder\n* enter  \"back\" to exit list\n-> ")
                     if pathName.lower() == "back":
                         break
                     else:
-                        tcpClientB.send((MESSAGE  + "$" + basePath + "$" + pathName).encode())
-                        path = tcpClientB.recv(80000)
-                        msg = tcpClientB.recv(80000)
-                        if (msg.decode()).lower() == "error in the path, try again":
+                        tcpClientB.send((MESSAGE  + "<separator>" + basePath + "<separator>" + pathName).encode())
+                        path = tcpClientB.recv(80000).decode().split("@")
+                        if (path[0].lower() == "error in the path, try again"):
+                            print(f"\n{path[0]}".upper())
                             basePath = basePath
                         else:
-                            basePath = path.decode()
-                            print(msg.decode())
-
+                            msg = path[1]
+                            basePath = path[0]
+                            print(f"\nfiles: {msg}\n")
+            else:
+                print("invalid code in list")
         tcpClientB.close()
         print("connection end")
     except:
@@ -80,7 +82,7 @@ def sendData(nameOfFile):
             l = f.read(BUFFER_SIZE)
         if not l:
             f.close()
-            tcpClientB.close()
+            #tcpClientB.close()
             break
     print("-----------Finished sending data-----------")
 
