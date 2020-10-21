@@ -62,6 +62,15 @@ def work():
                             msg = path[1]
                             basePath = path[0]
                             print(f"\nfiles: {msg}\n")
+            elif MESSAGE.lower() == "nf":
+                while True:
+                    deleteName = input("enter name of file to create  or enter  \" back \" to  back: ")
+                    if deleteName.lower() == "back":
+                        break
+                    else:
+                        tcpClientB.send((MESSAGE+"$"+deleteName).encode())
+                        msg = tcpClientB.recv(2000)
+                        print(msg.decode())
             else:
                 print("invalid code in list")
         tcpClientB.close()
