@@ -64,11 +64,11 @@ def work():
                             print(f"\nfiles: {msg}\n")
             elif MESSAGE.lower() == "nf":
                 while True:
-                    deleteName = input("enter name of file to create  or enter  \" back \" to  back: ")
+                    deleteName = input("enter name of folder to create  or enter  \" back \" to  back: ")
                     if deleteName.lower() == "back":
                         break
                     else:
-                        tcpClientB.send((MESSAGE+"$"+deleteName).encode())
+                        tcpClientB.send((MESSAGE+"<separator>"+deleteName).encode())
                         msg = tcpClientB.recv(2000)
                         print(msg.decode())
             else:

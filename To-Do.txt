@@ -3,7 +3,6 @@ TAREAS:
 * Juan David
 - verificar que el archivo exista al enviarlo.
 - que al subir al servidor un archivo que reciba la ruta o el nombre la carpeta
-- crear carpetas
 
 * Camilo
 - descargar archivos
