@@ -45,6 +45,23 @@ class ClientThread(Thread):
             return True
         except OSError as e:
             return e.filename, e.strerror
+    def sendData(self, nameOfFile):
+        print("--------------Sending...--------------")
+        filename = nameOfFile
+        f = open(filename, 'rb')
+        while True:
+            l = f.read(BUFFER_SIZE)
+            print(f"value of L is: {l}")
+            while (l):
+                conn.send(l)
+                print('Sent ',repr(l))
+                l = f.read(BUFFER_SIZE)
+            if not l:
+                f.close()
+                #tcpClientB.close()
+                break
+        print("-----------Finished sending data-----------")
+
     def run(self):
         while True:
             data = conn.recv(BUFFER_SIZE)
@@ -55,6 +72,8 @@ class ClientThread(Thread):
                 print("Server received menssage: "+recibed)
                 if recibed.lower() == "sd":
                     self.dataToRecibe(nameOfFile)
+                elif recibed.lower() == 'dd':
+                    self.sendData(arrData[1])
                 elif recibed.lower() == "rma":
                     print(nameOfFile)
                     nameAr = nameOfFile  # guarda el nombre del archivo
@@ -93,6 +112,7 @@ class ClientThread(Thread):
                 else:
                     conn.sendall(("error code").encode())
                     print("error code from client")
+
     def dataToRecibe(self,file):
         recived_f = file
         with open(recived_f, 'wb') as f:
@@ -111,37 +131,27 @@ class ClientThread(Thread):
         print('Successfully get the file')   
 
 
-# Multithreaded Python server : TCP Server Socket Program Stub
-TCP_IP = '0.0.0.0'
-TCP_PORT = 2004
-BUFFER_SIZE = 80096  # Usually 1024, but we need quick response
+SERVER = '0.0.0.0'
+PORT = 2004
+ADDRESS = (SERVER,PORT)
+BUFFER_SIZE = 1024 
 
 tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-tcpServer.bind((TCP_IP, TCP_PORT))
-threads = []
+tcpServer.bind(ADDRESS)
+
 try:
-    tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-    try:
-        tcpServer.bind((TCP_IP, TCP_PORT))
-        print(f"Listening as {TCP_IP} : {TCP_PORT}")
-    except socket.error as msg:
-        print("Socket Binding error" + str(msg) + "\n" + "Retrying...")
-
-    while True:
-        tcpServer.listen(4)
-        print("Multithreaded Python server : Waiting for connections from TCP clients...")
-        (conn, (ip,port)) = tcpServer.accept()
-        print(f"{ip} is connected in the port {port}.")
-
-        newthread = ClientThread(ip,port)
-        newthread.start()
-        threads.append(newthread)
-
-    for t in threads:
-        t.join()
-
+    tcpServer.bind(ADDRESS)
+    print(f"Listening as {SERVER} : {PORT}")
 except socket.error as msg:
-    print("Socket creation error: " + str(msg))
+    print("Socket Binding error" + str(msg) + "\n" + "Retrying...")
+
+while True:
+    tcpServer.listen(4)
+    print("Multithreaded Python server : Waiting for connections from TCP clients...")
+    (conn, (ip,port)) = tcpServer.accept()
+    print(f"{ip} is connected in the port {port}.")
+
+    newthread = ClientThread(ip,port)
+    newthread.daemon = True
+    newthread.start()

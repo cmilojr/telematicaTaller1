@@ -18,16 +18,23 @@ def work():
                 break
             if MESSAGE.lower() == 'sd':
                 try:
-                    nameOfFile = input("Enter name of file with extension: ")
+                    nameOfFile = input("Enter name of file to upload with extension\n-> ")
                     tcpClientB.send((MESSAGE+"<separator>"+nameOfFile).encode())
                     sendData(nameOfFile)
                 except:
                     print("Error sending data")
             #MESSAGE = input("Enter code / Enter exit: ")
             #tcpClientB.send(MESSAGE.encode())
+            elif MESSAGE.lower() == 'dd': 
+                try:
+                    nameOfFile = input("Enter name of file to download with extension\n-> ")
+                    tcpClientB.send((MESSAGE+"<separator>"+nameOfFile).encode())
+                    dataToRecibe(nameOfFile)
+                except:
+                    pass
             elif MESSAGE.lower() == "rma":
                 while True:
-                    deleteName = input("enter name of file to delete or enter  \" back \" to back: ")
+                    deleteName = input("Enter name of file to delete or enter  \" back \" to back\n-> ")
                     if deleteName.lower() == "back":
                         break
                     else:
@@ -36,7 +43,7 @@ def work():
                         print(msg.decode())
             elif MESSAGE.lower() == "rmf":
                 while True:
-                    deleteName = input("enter name of file to delete or enter  \" back \" to  back: ")
+                    deleteName = input("Enter name of file to delete or enter  \" back \" to  back\n-> ")
                     if deleteName.lower() == "back":
                         break
                     else:
@@ -49,7 +56,7 @@ def work():
                 basePath = msg.decode()
                 while True:
                     print("\n* current path = "+basePath)
-                    pathName = input("* enter name of the folder\n* enter \".\" to list the files of the current folder\n* use \"..\" to exit the folder\n* enter  \"back\" to exit list\n-> ")
+                    pathName = input("* Enter name of the folder\n* enter \".\" to list the files of the current folder\n* use \"..\" to exit the folder\n* enter  \"back\" to exit list\n-> ")
                     if pathName.lower() == "back":
                         break
                     else:
@@ -64,7 +71,7 @@ def work():
                             print(f"\nfiles: {msg}\n")
             elif MESSAGE.lower() == "nf":
                 while True:
-                    deleteName = input("enter name of folder to create  or enter  \" back \" to  back: ")
+                    deleteName = input("Enter name of folder to create  or enter  \" back \" to  back\n-> ")
                     if deleteName.lower() == "back":
                         break
                     else:
@@ -77,6 +84,23 @@ def work():
         print("connection end")
     except:
         print("Connection error to the server.")
+
+def dataToRecibe(file):
+    recived_f = file
+    with open(recived_f, 'wb') as f:
+        print('file opened')
+        while True:
+            print('receiving data...')
+            data = tcpClientB.recv(BUFFER_SIZE)
+            print(f"data recived = {data}")
+            f.write(data)
+            #if not data:
+            print('finished receiving data.')
+            f.close()
+            print('file close()')
+            break
+            #f.write(data)
+    print('Successfully get the file') 
 
 def sendData(nameOfFile):
     print("--------------Sending...--------------")
@@ -96,4 +120,5 @@ def sendData(nameOfFile):
     print("-----------Finished sending data-----------")
 
 n = threading.Thread(target=work)
+
 n.start()

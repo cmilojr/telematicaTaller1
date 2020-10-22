@@ -5,5 +5,4 @@ TAREAS:
 - que al subir al servidor un archivo que reciba la ruta o el nombre la carpeta
 
 * Camilo
-- descargar archivos
 - el servidor se confunde cuando ambos clientes interactuan
