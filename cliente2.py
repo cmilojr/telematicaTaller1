@@ -18,9 +18,16 @@ def work():
                 break
             if MESSAGE.lower() == 'sd':
                 try:
+                    path = input("Enter name of path to save\n-> ")
                     nameOfFile = input("Enter name of file to upload with extension\n-> ")
-                    tcpClientB.send((MESSAGE+"<separator>"+nameOfFile).encode())
-                    sendData(nameOfFile)
+                    try:
+                        open(nameOfFile, 'rb')
+                        tcpClientB.send((MESSAGE + "<separator>" + nameOfFile + "<separator>" + path).encode())
+                        sendData(nameOfFile)
+                        move = tcpClientB.recv(8000)
+                        print(move.decode())
+                    except FileNotFoundError as a:
+                        print(a)
                 except:
                     print("Error sending data")
             #MESSAGE = input("Enter code / Enter exit: ")
@@ -28,7 +35,7 @@ def work():
             elif MESSAGE.lower() == 'dd': 
                 try:
                     nameOfFile = input("Enter name of file to download with extension\n-> ")
-                    tcpClientB.send((MESSAGE+"<separator>"+nameOfFile).encode())
+                    tcpClientB.send((MESSAGE + "<separator>" + nameOfFile).encode())
                     dataToRecibe(nameOfFile)
                 except:
                     pass
@@ -105,6 +112,7 @@ def dataToRecibe(file):
 def sendData(nameOfFile):
     print("--------------Sending...--------------")
     filename = nameOfFile
+
     f = open(filename, 'rb')
     while True:
         l = f.read(BUFFER_SIZE)
@@ -117,6 +125,7 @@ def sendData(nameOfFile):
             f.close()
             #tcpClientB.close()
             break
+
     print("-----------Finished sending data-----------")
 
 n = threading.Thread(target=work)

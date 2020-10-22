@@ -61,6 +61,12 @@ class ClientThread(Thread):
                 #tcpClientB.close()
                 break
         print("-----------Finished sending data-----------")
+    def move(self, name, destination):
+        try:
+            shutil.move(name, destination)
+            return True
+        except shutil.Error as e:
+            return e
 
     def run(self):
         while True:
@@ -72,6 +78,12 @@ class ClientThread(Thread):
                 print("Server received menssage: "+recibed)
                 if recibed.lower() == "sd":
                     self.dataToRecibe(nameOfFile)
+                    destinacion = arrData[2]
+                    move = self.move(nameOfFile, destinacion)
+                    if move == True:
+                        conn.sendall(("success in the upload").encode())
+                    else:
+                        conn.sendall(move.__str__().encode())
                 elif recibed.lower() == 'dd':
                     self.sendData(arrData[1])
                 elif recibed.lower() == "rma":
