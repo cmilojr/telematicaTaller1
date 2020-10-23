@@ -48,24 +48,28 @@ class ClientThread(Thread):
     def sendData(self, nameOfFile):
         print("--------------Sending...--------------")
         filename = nameOfFile
-        f = open(filename, 'rb')
-        while True:
-            l = f.read(BUFFER_SIZE)
-            print(f"value of L is: {l}")
-            while (l):
-                conn.send(l)
-                print('Sent ',repr(l))
+        try:
+            f = open(filename, 'rb')
+            while True:
                 l = f.read(BUFFER_SIZE)
-            if not l:
-                f.close()
-                #tcpClientB.close()
-                break
-        print("-----------Finished sending data-----------")
+                print(f"value of L is: {l}")
+                while (l):
+                    conn.send(l)
+                    print('Sent ',repr(l))
+                    l = f.read(BUFFER_SIZE)
+                if not l:
+                    f.close()
+                    #tcpClientB.close()
+                    break
+            print("-----------Finished sending data-----------")
+            return True
+        except OSError as a:
+            return a.filename, a.filename
     def move(self, name, destination):
         try:
             shutil.move(name, destination)
             return True
-        except shutil.Error as e:
+        except OSError as e:
             return e
 
     def run(self):
@@ -78,14 +82,19 @@ class ClientThread(Thread):
                 print("Server received menssage: "+recibed)
                 if recibed.lower() == "sd":
                     self.dataToRecibe(nameOfFile)
-                    destinacion = arrData[2]
-                    move = self.move(nameOfFile, destinacion)
+                    destination = arrData[2]
+                    move = self.move(nameOfFile, destination)
                     if move == True:
                         conn.sendall(("success in the upload").encode())
                     else:
                         conn.sendall(move.__str__().encode())
                 elif recibed.lower() == 'dd':
-                    self.sendData(arrData[1])
+                    try:
+                        open(nameOfFile)
+                        conn.send(("yes").encode())
+                        self.sendData(arrData[1])
+                    except OSError as e:
+                        conn.send((e.strerror).encode())
                 elif recibed.lower() == "rma":
                     print(nameOfFile)
                     nameAr = nameOfFile  # guarda el nombre del archivo

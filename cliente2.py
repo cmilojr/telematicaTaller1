@@ -2,7 +2,7 @@
 import os
 import socket
 import threading
-
+import shutil
 host = socket.gethostname()
 port = 2004
 BUFFER_SIZE = 2000
@@ -26,19 +26,30 @@ def work():
                         sendData(nameOfFile)
                         move = tcpClientB.recv(8000)
                         print(move.decode())
-                    except FileNotFoundError as a:
-                        print(a)
+                    except OSError as a:
+                        print(a.strerror)
                 except:
                     print("Error sending data")
             #MESSAGE = input("Enter code / Enter exit: ")
             #tcpClientB.send(MESSAGE.encode())
             elif MESSAGE.lower() == 'dd': 
                 try:
+                    destination = input("Enter name of path to save\n-> ")
                     nameOfFile = input("Enter name of file to download with extension\n-> ")
                     tcpClientB.send((MESSAGE + "<separator>" + nameOfFile).encode())
-                    dataToRecibe(nameOfFile)
-                except:
-                    pass
+                    a = tcpClientB.recv(8000).decode()
+                    if a == "yes":
+                        dataToRecibe(nameOfFile)
+                        try:
+                            shutil.move(nameOfFile, destination)
+                            print("success in save")
+                        except OSError as a:
+                            print(a)
+
+                    else:
+                        print(a)
+                except OSError as e:
+                    print("error: " + e.strerror)
             elif MESSAGE.lower() == "rma":
                 while True:
                     deleteName = input("Enter name of file to delete or enter  \" back \" to back\n-> ")
@@ -108,7 +119,12 @@ def dataToRecibe(file):
             break
             #f.write(data)
     print('Successfully get the file') 
-
+def move(name, destination):
+    try:
+        shutil.move(name, destination)
+        return True
+    except shutil.Error as e:
+        return e.strerror
 def sendData(nameOfFile):
     print("--------------Sending...--------------")
     filename = nameOfFile
