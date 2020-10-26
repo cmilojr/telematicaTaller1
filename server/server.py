@@ -16,7 +16,6 @@ class ClientThread(Thread):
             os.remove(nameAr)
             return True
         except OSError as e:
-            print("Error: %s - %s." % (e.filename, e.strerror))
             return False
 
     def removeFile(self, nameFile):
@@ -66,12 +65,16 @@ class ClientThread(Thread):
         except OSError as a:
             return a.filename, a.filename
     def move(self, name, destination):
-        try:
-            shutil.move(name, destination)
-            return True
-        except OSError as e:
-            return e
 
+        if(os.path.isdir(destination)):
+            try:
+                shutil.move(name, destination)
+                return True
+            except OSError as e:
+                return e
+        else:
+            self.removeArchive(name)
+            return"error: " + destination + " not exist"
     def run(self):
         while True:
             data = conn.recv(BUFFER_SIZE)
