@@ -40,12 +40,11 @@ def work():
                     a = tcpClientB.recv(8000).decode()
                     if a == "yes":
                         dataToRecibe(nameOfFile)
-                        try:
-                            shutil.move(nameOfFile, destination)
+                        move = moveFile(nameOfFile, destination)
+                        if move == "success":
                             print("success in save")
-                        except OSError as a:
-                            print(a)
-
+                        else:
+                            print(move)
                     else:
                         print(a)
                 except OSError as e:
@@ -119,12 +118,13 @@ def dataToRecibe(file):
             break
             #f.write(data)
     print('Successfully get the file') 
-def move(name, destination):
+def moveFile(name,  destination):
+
     try:
         shutil.move(name, destination)
-        return True
-    except shutil.Error as e:
-        return e.strerror
+        return "success"
+    except OSError as e:
+        return e.__str__()
 def sendData(nameOfFile):
     print("--------------Sending...--------------")
     filename = nameOfFile
